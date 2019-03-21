@@ -1,4 +1,4 @@
-package srv
+package service
 
 import (
 	"demo/grpc_test/proto"

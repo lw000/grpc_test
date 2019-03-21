@@ -13,6 +13,8 @@ It has these top-level messages:
 	HelloReply
 	AddRequest
 	AddReply
+	SubRequest
+	SubReply
 */
 package helloworld
 

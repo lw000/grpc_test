@@ -59,9 +59,53 @@ func (m *AddReply) GetC() int32 {
 	return 0
 }
 
+// SubRequest 请求数据格式
+type SubRequest struct {
+	A int32 `protobuf:"varint,1,opt,name=a" json:"a,omitempty"`
+	B int32 `protobuf:"varint,2,opt,name=b" json:"b,omitempty"`
+}
+
+func (m *SubRequest) Reset()                    { *m = SubRequest{} }
+func (m *SubRequest) String() string            { return proto.CompactTextString(m) }
+func (*SubRequest) ProtoMessage()               {}
+func (*SubRequest) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{2} }
+
+func (m *SubRequest) GetA() int32 {
+	if m != nil {
+		return m.A
+	}
+	return 0
+}
+
+func (m *SubRequest) GetB() int32 {
+	if m != nil {
+		return m.B
+	}
+	return 0
+}
+
+// SubReply 响应数据格式
+type SubReply struct {
+	C int32 `protobuf:"varint,1,opt,name=c" json:"c,omitempty"`
+}
+
+func (m *SubReply) Reset()                    { *m = SubReply{} }
+func (m *SubReply) String() string            { return proto.CompactTextString(m) }
+func (*SubReply) ProtoMessage()               {}
+func (*SubReply) Descriptor() ([]byte, []int) { return fileDescriptor1, []int{3} }
+
+func (m *SubReply) GetC() int32 {
+	if m != nil {
+		return m.C
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*AddRequest)(nil), "helloworld.AddRequest")
 	proto.RegisterType((*AddReply)(nil), "helloworld.AddReply")
+	proto.RegisterType((*SubRequest)(nil), "helloworld.SubRequest")
+	proto.RegisterType((*SubReply)(nil), "helloworld.SubReply")
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -76,6 +120,7 @@ const _ = grpc.SupportPackageIsVersion4
 
 type MathServiceClient interface {
 	Add(ctx context.Context, in *AddRequest, opts ...grpc.CallOption) (*AddReply, error)
+	Sub(ctx context.Context, in *SubRequest, opts ...grpc.CallOption) (*SubReply, error)
 }
 
 type mathServiceClient struct {
@@ -95,10 +140,20 @@ func (c *mathServiceClient) Add(ctx context.Context, in *AddRequest, opts ...grp
 	return out, nil
 }
 
+func (c *mathServiceClient) Sub(ctx context.Context, in *SubRequest, opts ...grpc.CallOption) (*SubReply, error) {
+	out := new(SubReply)
+	err := grpc.Invoke(ctx, "/helloworld.MathService/Sub", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for MathService service
 
 type MathServiceServer interface {
 	Add(context.Context, *AddRequest) (*AddReply, error)
+	Sub(context.Context, *SubRequest) (*SubReply, error)
 }
 
 func RegisterMathServiceServer(s *grpc.Server, srv MathServiceServer) {
@@ -123,6 +178,24 @@ func _MathService_Add_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MathService_Sub_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MathServiceServer).Sub(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/helloworld.MathService/Sub",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MathServiceServer).Sub(ctx, req.(*SubRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _MathService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "helloworld.MathService",
 	HandlerType: (*MathServiceServer)(nil),
@@ -130,6 +203,10 @@ var _MathService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Add",
 			Handler:    _MathService_Add_Handler,
+		},
+		{
+			MethodName: "Sub",
+			Handler:    _MathService_Sub_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -139,14 +216,16 @@ var _MathService_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("math.pb", fileDescriptor1) }
 
 var fileDescriptor1 = []byte{
-	// 143 bytes of a gzipped FileDescriptorProto
+	// 171 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x62, 0xcf, 0x4d, 0x2c, 0xc9,
 	0xd0, 0x2b, 0x48, 0x12, 0xe2, 0xca, 0x48, 0xcd, 0xc9, 0xc9, 0x2f, 0xcf, 0x2f, 0xca, 0x49, 0x51,
 	0xd2, 0xe0, 0xe2, 0x72, 0x4c, 0x49, 0x09, 0x4a, 0x2d, 0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0xe2, 0xe1,
 	0x62, 0x4c, 0x94, 0x60, 0x54, 0x60, 0xd4, 0x60, 0x0d, 0x62, 0x4c, 0x04, 0xf1, 0x92, 0x24, 0x98,
 	0x20, 0xbc, 0x24, 0x25, 0x09, 0x2e, 0x0e, 0xb0, 0xca, 0x82, 0x9c, 0x4a, 0x90, 0x4c, 0x32, 0x4c,
-	0x5d, 0xb2, 0x91, 0x0b, 0x17, 0xb7, 0x6f, 0x62, 0x49, 0x46, 0x70, 0x6a, 0x51, 0x59, 0x66, 0x72,
-	0xaa, 0x90, 0x29, 0x17, 0xb3, 0x63, 0x4a, 0x8a, 0x90, 0x98, 0x1e, 0xc2, 0x1a, 0x3d, 0x84, 0x1d,
-	0x52, 0x22, 0x18, 0xe2, 0x05, 0x39, 0x95, 0x4a, 0x0c, 0x49, 0x6c, 0x05, 0x45, 0xf9, 0x25, 0xf9,
-	0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x72, 0x00, 0x8e, 0x8a, 0xa7, 0x00, 0x00, 0x00,
+	0x5d, 0x32, 0xc8, 0x8c, 0xe0, 0xd2, 0x24, 0x22, 0xcd, 0x00, 0xab, 0xc4, 0x30, 0xc3, 0xa8, 0x9a,
+	0x8b, 0xdb, 0x37, 0xb1, 0x24, 0x23, 0x38, 0xb5, 0xa8, 0x2c, 0x33, 0x39, 0x55, 0xc8, 0x94, 0x8b,
+	0xd9, 0x31, 0x25, 0x45, 0x48, 0x4c, 0x0f, 0xe1, 0x54, 0x3d, 0x84, 0x3b, 0xa5, 0x44, 0x30, 0xc4,
+	0x0b, 0x72, 0x2a, 0x95, 0x18, 0x40, 0xda, 0x82, 0x4b, 0x93, 0x50, 0xb5, 0x21, 0x9c, 0x86, 0xaa,
+	0x0d, 0xe6, 0x10, 0x25, 0x86, 0x24, 0xb6, 0x82, 0xa2, 0xfc, 0x92, 0x7c, 0x63, 0x40, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0xb4, 0x86, 0x46, 0x37, 0x22, 0x01, 0x00, 0x00,
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"demo/grpc_test/cmd/server/srv"
+	"demo/grpc_test/cmd/server/service"
 	"demo/grpc_test/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -19,13 +19,14 @@ func main() {
 		log.Panic(err)
 	}
 
-	s := grpc.NewServer()
-	helloworld.RegisterGreeterServer(s, &srv.GreeterServer{})
-	helloworld.RegisterMathServiceServer(s, &srv.MatchServer{})
+	serv := grpc.NewServer()
 
-	reflection.Register(s)
+	helloworld.RegisterGreeterServer(serv, &service.GreeterServer{})
+	helloworld.RegisterMathServiceServer(serv, &service.MatchServer{})
 
-	if err = s.Serve(lis); err != nil {
+	reflection.Register(serv)
+
+	if err = serv.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
