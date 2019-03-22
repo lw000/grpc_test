@@ -23,10 +23,10 @@ func TestGreeter() {
 	//ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	//defer cancel()
 	ctx := context.Background()
-	greet := helloworld.NewGreeterClient(conn)
+	client := helloworld.NewGreeterClient(conn)
 	for i := 0; i < 100; i++ {
 		begin := time.Now()
-		reply, er := greet.SayHello(ctx, &helloworld.HelloRequest{Name: "world"})
+		reply, er := client.SayHello(ctx, &helloworld.HelloRequest{Name: "world"})
 		if er != nil {
 			log.Printf("did not connect:%v", er)
 			return
@@ -38,10 +38,10 @@ func TestGreeter() {
 
 func TestMathService() {
 	ctx := context.Background()
-	math := helloworld.NewMathServiceClient(conn)
+	client := helloworld.NewMathServiceClient(conn)
 
 	{
-		reply, er := math.Add(ctx, &helloworld.AddRequest{A: 10, B: 30})
+		reply, er := client.Add(ctx, &helloworld.AddRequest{A: 10, B: 30})
 		if er != nil {
 			log.Printf("did not connect:%v", er)
 			return
@@ -51,7 +51,7 @@ func TestMathService() {
 	}
 
 	{
-		reply, er := math.Sub(ctx, &helloworld.SubRequest{A: 10, B: 100})
+		reply, er := client.Sub(ctx, &helloworld.SubRequest{A: 10, B: 100})
 		if er != nil {
 			log.Printf("did not connect:%v", er)
 			return

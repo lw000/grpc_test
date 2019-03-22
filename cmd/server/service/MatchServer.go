@@ -6,10 +6,10 @@ import (
 	"log"
 )
 
-type MatchServer struct {
+type MathServer struct {
 }
 
-func (s *MatchServer) Add(ctx context.Context, req *helloworld.AddRequest) (*helloworld.AddReply, error) {
+func (s *MathServer) Add(ctx context.Context, req *helloworld.AddRequest) (*helloworld.AddReply, error) {
 	log.Println(req)
 
 	rp := &helloworld.AddReply{
@@ -19,7 +19,7 @@ func (s *MatchServer) Add(ctx context.Context, req *helloworld.AddRequest) (*hel
 	return rp, nil
 }
 
-func (s *MatchServer) Sub(ctx context.Context, req *helloworld.SubRequest) (*helloworld.SubReply, error) {
+func (s *MathServer) Sub(ctx context.Context, req *helloworld.SubRequest) (*helloworld.SubReply, error) {
 	log.Println(req)
 
 	rp := &helloworld.SubReply{

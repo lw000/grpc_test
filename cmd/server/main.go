@@ -14,7 +14,7 @@ const (
 )
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	listen, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -22,11 +22,11 @@ func main() {
 	serv := grpc.NewServer()
 
 	helloworld.RegisterGreeterServer(serv, &service.GreeterServer{})
-	helloworld.RegisterMathServiceServer(serv, &service.MatchServer{})
+	helloworld.RegisterMathServiceServer(serv, &service.MathServer{})
 
 	reflection.Register(serv)
 
-	if err = serv.Serve(lis); err != nil {
+	if err = serv.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
