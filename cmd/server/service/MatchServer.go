@@ -1,7 +1,7 @@
 package service
 
 import (
-	"demo/grpc_test/proto"
+	"demo/grpc_test/proto/helloworld"
 	"golang.org/x/net/context"
 	"log"
 )

@@ -2,7 +2,8 @@ package main
 
 import (
 	"demo/grpc_test/cmd/server/service"
-	"demo/grpc_test/proto"
+	"demo/grpc_test/proto/chat"
+	"demo/grpc_test/proto/helloworld"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
@@ -21,6 +22,7 @@ func main() {
 
 	serv := grpc.NewServer()
 
+	chat.RegisterChatServer(serv, &service.ChatStreamer{})
 	helloworld.RegisterGreeterServer(serv, &service.GreeterServer{})
 	helloworld.RegisterMathServiceServer(serv, &service.MathServer{})
 

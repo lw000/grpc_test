@@ -1,9 +1,11 @@
 package main
 
 import (
-	"demo/grpc_test/proto"
-	"golang.org/x/net/context"
+	"context"
+	"demo/grpc_test/proto/chat"
+	"demo/grpc_test/proto/helloworld"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 	"sync/atomic"
 	"time"
@@ -39,7 +41,6 @@ func TestGreeter() {
 func TestMathService() {
 	ctx := context.Background()
 	client := helloworld.NewMathServiceClient(conn)
-
 	{
 		reply, er := client.Add(ctx, &helloworld.AddRequest{A: 10, B: 30})
 		if er != nil {
@@ -61,6 +62,71 @@ func TestMathService() {
 	}
 }
 
+func TestChat() {
+	client := chat.NewChatClient(conn)
+	stream, er := client.BidStream(context.Background())
+	if er != nil {
+		log.Println(er)
+		return
+	}
+
+	var requestId int32 = 0
+	go func() {
+		for {
+			atomic.AddInt32(&requestId, 1)
+			if er = stream.SendMsg(&chat.Request{MainId: 1, SubId: 10000, RequestId: requestId, Input: "message-1"}); er != nil {
+				log.Println(er)
+				return
+			}
+			//time.Sleep(time.Second * time.Duration(1))
+		}
+	}()
+
+	go func() {
+		for {
+			atomic.AddInt32(&requestId, 1)
+			if er = stream.SendMsg(&chat.Request{MainId: 2, SubId: 10000, RequestId: requestId, Input: "message-2"}); er != nil {
+				log.Println(er)
+				return
+			}
+			//time.Sleep(time.Second * time.Duration(1))
+		}
+	}()
+
+	go func() {
+		for {
+			atomic.AddInt32(&requestId, 1)
+			if er = stream.SendMsg(&chat.Request{MainId: 3, SubId: 10000, RequestId: requestId, Input: "message-3"}); er != nil {
+				log.Println(er)
+				return
+			}
+			//time.Sleep(time.Second * time.Duration(1))
+		}
+	}()
+
+	for {
+		var resp *chat.Response
+		resp, er = stream.Recv()
+		if er == io.EOF {
+			log.Println("接收到服务端的结算信号", er)
+			break
+		}
+
+		if er != nil {
+			log.Println("接收数据错误", er)
+			break
+		}
+		switch resp.MainId {
+		case 1:
+			log.Println("resp", resp)
+		case 2:
+			log.Println("resp", resp)
+		case 3:
+			log.Println("resp", resp)
+		}
+	}
+}
+
 func main() {
 	var er error
 	conn, er = grpc.Dial(address, grpc.WithInsecure())
@@ -75,6 +141,8 @@ func main() {
 	go TestGreeter()
 
 	go TestMathService()
+
+	TestChat()
 
 	select {}
 }

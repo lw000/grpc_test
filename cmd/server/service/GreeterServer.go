@@ -1,7 +1,7 @@
 package service
 
 import (
-	"demo/grpc_test/proto"
+	"demo/grpc_test/proto/helloworld"
 	"golang.org/x/net/context"
 	"log"
 )
@@ -9,7 +9,7 @@ import (
 type GreeterServer struct {
 }
 
-func (s *GreeterServer) SayHello(ctx context.Context, req *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
+func (g *GreeterServer) SayHello(ctx context.Context, req *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
 	log.Println(req)
 
 	rp := &helloworld.HelloReply{
