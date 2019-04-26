@@ -1,1 +1,1 @@
-protoc --go_out=plugins=grpc:. ./greeter.pb ./math.pb
+protoc --go_out=plugins=grpc:. ./greeter.proto ./math.proto
